@@ -1,0 +1,121 @@
+-- --------------------------------------------------------
+-- Host:                         188.121.44.191
+-- Server version:               5.5.43-37.2-log - Percona Server (GPL), Release rel30.2, Revision 38.2
+-- Server OS:                    Linux
+-- HeidiSQL Version:             9.3.0.5005
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+-- Dumping database structure for OultonPrise
+DROP DATABASE IF EXISTS `OultonPrise`;
+CREATE DATABASE IF NOT EXISTS `OultonPrise` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `OultonPrise`;
+
+
+-- Dumping structure for table OultonPrise.agency
+DROP TABLE IF EXISTS `agency`;
+CREATE TABLE IF NOT EXISTS `agency` (
+  `agency_id` tinyint(2) unsigned NOT NULL AUTO_INCREMENT,
+  `location` varchar(50) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`agency_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+-- Dumping data for table OultonPrise.agency: ~3 rows (approximately)
+/*!40000 ALTER TABLE `agency` DISABLE KEYS */;
+REPLACE INTO `agency` (`agency_id`, `location`) VALUES
+	(1, 'Moncton'),
+	(2, 'Dieppe'),
+	(3, 'Riverview');
+/*!40000 ALTER TABLE `agency` ENABLE KEYS */;
+
+
+-- Dumping structure for table OultonPrise.customers
+DROP TABLE IF EXISTS `customers`;
+CREATE TABLE IF NOT EXISTS `customers` (
+  `customer_id` tinyint(2) unsigned NOT NULL AUTO_INCREMENT,
+  `f_name` varchar(30) NOT NULL,
+  `l_name` varchar(30) NOT NULL,
+  `customer_balance` int(11) DEFAULT NULL,
+  PRIMARY KEY (`customer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+-- Dumping data for table OultonPrise.customers: ~3 rows (approximately)
+/*!40000 ALTER TABLE `customers` DISABLE KEYS */;
+REPLACE INTO `customers` (`customer_id`, `f_name`, `l_name`, `customer_balance`) VALUES
+	(1, 'Zack', 'LeBlanc', 100),
+	(2, 'Kiran', 'Bagisetty', 100),
+	(3, 'Brandon', 'Drier', 100);
+/*!40000 ALTER TABLE `customers` ENABLE KEYS */;
+
+
+-- Dumping structure for table OultonPrise.rentals
+DROP TABLE IF EXISTS `rentals`;
+CREATE TABLE IF NOT EXISTS `rentals` (
+  `rental_id` tinyint(2) unsigned NOT NULL AUTO_INCREMENT,
+  `customer_id` tinyint(2) unsigned NOT NULL,
+  `date_returned` date NOT NULL,
+  `date_out` date DEFAULT NULL,
+  `vehicle_id` tinyint(2) unsigned NOT NULL,
+  `vehicle_class_id` tinyint(2) unsigned NOT NULL,
+  PRIMARY KEY (`rental_id`),
+  KEY `fk_cid` (`customer_id`),
+  KEY `fk_vid` (`vehicle_id`),
+  KEY `fk_vcid` (`vehicle_class_id`),
+  CONSTRAINT `fk_class_id` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_vehicle_class_id` FOREIGN KEY (`vehicle_class_id`) REFERENCES `vehicle_class` (`vehicle_class_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_vehicle_id` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+-- Dumping data for table OultonPrise.rentals: ~1 rows (approximately)
+/*!40000 ALTER TABLE `rentals` DISABLE KEYS */;
+REPLACE INTO `rentals` (`rental_id`, `customer_id`, `date_returned`, `date_out`, `vehicle_id`, `vehicle_class_id`) VALUES
+	(1, 1, '2015-12-21', '2015-12-14', 1, 1);
+/*!40000 ALTER TABLE `rentals` ENABLE KEYS */;
+
+
+-- Dumping structure for table OultonPrise.vehicles
+DROP TABLE IF EXISTS `vehicles`;
+CREATE TABLE IF NOT EXISTS `vehicles` (
+  `vehicle_id` tinyint(2) unsigned NOT NULL AUTO_INCREMENT,
+  `vehicle_name` varchar(30) NOT NULL,
+  `vehicle_class_id` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `agency_id` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`vehicle_id`),
+  KEY `fk_vcid_v` (`vehicle_class_id`),
+  KEY `fk_agency_id` (`agency_id`),
+  CONSTRAINT `fk_agency_id` FOREIGN KEY (`agency_id`) REFERENCES `agency` (`agency_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_vehicle_class_id_vehicles` FOREIGN KEY (`vehicle_class_id`) REFERENCES `vehicle_class` (`vehicle_class_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+-- Dumping data for table OultonPrise.vehicles: ~3 rows (approximately)
+/*!40000 ALTER TABLE `vehicles` DISABLE KEYS */;
+REPLACE INTO `vehicles` (`vehicle_id`, `vehicle_name`, `vehicle_class_id`, `agency_id`) VALUES
+	(1, 'Toyota Prius', 1, 1),
+	(2, 'Audi A6', 2, 2),
+	(3, 'Land Rover Discovery', 3, 3);
+/*!40000 ALTER TABLE `vehicles` ENABLE KEYS */;
+
+
+-- Dumping structure for table OultonPrise.vehicle_class
+DROP TABLE IF EXISTS `vehicle_class`;
+CREATE TABLE IF NOT EXISTS `vehicle_class` (
+  `vehicle_class_id` tinyint(2) unsigned NOT NULL AUTO_INCREMENT,
+  `vehicle_class` varchar(50) NOT NULL DEFAULT '0',
+  `rental_rate` decimal(10,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`vehicle_class_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+-- Dumping data for table OultonPrise.vehicle_class: ~3 rows (approximately)
+/*!40000 ALTER TABLE `vehicle_class` DISABLE KEYS */;
+REPLACE INTO `vehicle_class` (`vehicle_class_id`, `vehicle_class`, `rental_rate`) VALUES
+	(1, 'Economy', 9.99),
+	(2, 'Mid-Sized', 19.99),
+	(3, 'S.U.V.', 24.99);
+/*!40000 ALTER TABLE `vehicle_class` ENABLE KEYS */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
