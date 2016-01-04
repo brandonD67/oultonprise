@@ -1,7 +1,21 @@
 <?php
 include 'includes/header.php';
 ?>
-
+<?php
+	require('connect.php');
+    // If the values are posted, insert them into the database.
+    if (isset($_POST['username']) && isset($_POST['password'])){
+        $username = $_POST['username'];
+		$email = $_POST['email'];
+        $password = $_POST['password'];
+ 
+        $query = "INSERT INTO `user` (username, password, email) VALUES ('$username', '$password', '$email')";
+        $result = mysql_query($query);
+        if($result){
+            $msg = "User Created Successfully.";
+        }
+    }
+    ?>
 <header id="head" class="secondary"></header>
 
 <!-- container -->
@@ -27,45 +41,19 @@ include 'includes/header.php';
                         <p class="text-center text-muted">Lorem ipsum dolor sit amet, <a href="signin.php">Login</a> adipisicing elit. Quo nulla quibusdam cum doloremque incidunt nemo sunt a tenetur omnis odio. </p>
                         <hr>
 
-                        <form>
-                            <div class="top-margin">
-                                <label>First Name</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="top-margin">
-                                <label>Last Name</label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="top-margin">
-                                <label>Email Address <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control">
-                            </div>
-
-                            <div class="row top-margin">
-                                <div class="col-sm-6">
-                                    <label>Password <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="col-sm-6">
-                                    <label>Confirm Password <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control">
-                                </div>
-                            </div>
-
-                            <hr>
-
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <label class="checkbox">
-                                        <input type="checkbox"> 
-                                        I've read the <a href="page_terms.html">Terms and Conditions</a>
-                                    </label>                        
-                                </div>
-                                <div class="col-lg-4 text-right">
-                                    <button class="btn btn-action" type="submit">Register</button>
-                                </div>
-                            </div>
-                        </form>
+                            <form action="" method="POST">
+    <p><label>User Name : </label>
+	<input id="username" type="text" name="username" placeholder="username" /></p>
+	
+	<p><label>E-Mail&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : </label>
+	 <input id="password" type="email" name="email"/></p>
+ 
+     <p><label>Password&nbsp;&nbsp; : </label>
+	 <input id="password" type="password" name="password" placeholder="password" /></p>
+ 
+    <a class="btn" href="login.php">Login</a>
+    <input class="btn register" type="submit" name="submit" value="Register" />
+    </form>
                     </div>
                 </div>
 
